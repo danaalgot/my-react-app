@@ -1,4 +1,6 @@
-import './App.css'
+import { useEffect, useReducer } from 'react';
+import './App.css';
+import mountain from './images/mountain-image.jpg';
 
 function Header({name, emoji}) {
   return (
@@ -20,13 +22,20 @@ const dishObjects = items.map((dish, i) => ({
   title: dish
 }));
 
-function Main({ dishes }) {
+function Main({ dishes, openStatus, onStatus }) {
   return (
-    <ul>
-      { dishes.map((dish) => (
-        <li key={dish.id}>{ dish.title }</li>
-      )) }
-    </ul>
+    <>
+      <button onClick={onStatus}>{openStatus ? "Close" : "Open"} site</button>
+      <h2>The site is currently {openStatus ? "open" : "closed"}.</h2>
+      <main>
+        <img src={mountain} height={400} alt="Mountain view" />
+        <ul>
+          { dishes.map((dish) => (
+            <li key={dish.id}>{ dish.title }</li>
+          )) }
+        </ul>
+      </main>
+    </>
   )
 }
 
@@ -39,11 +48,26 @@ function Footer(props) {
 }
 
 function App() {
+  const [status, toggle] = useReducer(
+    (status) => !status, 
+    true
+  );
+
+  useEffect(() => {
+    console.log(`The site is ${status ? "open" : "closed"}`)
+  }, []);
+
   return (
     <div>
-      <Header name="Dana" emoji="🌻" />
-      <Main dishes={dishObjects}/>
-      <Footer year={new Date().getFullYear()} />
+      <Header 
+        name="Dana" 
+        emoji="🌻" />
+      <Main 
+        dishes={dishObjects} 
+        openStatus={status} 
+        onStatus={toggle} />
+      <Footer 
+        year={new Date().getFullYear()} />
     </div>
   )
 }
